@@ -1,0 +1,34 @@
+{
+  "name": "sveltelab-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A pnpm monorepo for SvelteKit apps and shared packages",
+  "scripts": {
+    "dev": "pnpm --filter apps/web dev",
+    "build": "pnpm --filter apps/web build",
+    "lint": "pnpm --filter ./... lint",
+    "test": "pnpm --filter ./... test",
+    "playground:dev": "pnpm --filter my-playground dev",
+    "playground:build": "pnpm --filter my-playground build",
+    "playground:preview": "pnpm --filter my-playground preview",
+    "playground:check": "pnpm --filter my-playground check",
+    "playground:lint": "pnpm --filter my-playground lint",
+    "playground:test": "pnpm --filter my-playground test",
+    "test:cucumber": "pnpm --filter tests cucumber",
+    "test:cucumber:parallel": "pnpm --filter tests cucumber:parallel",
+    "test:cucumber:headed": "pnpm --filter tests cucumber:headed",
+    "test:cucumber:debug": "pnpm --filter tests cucumber:debug"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^1.10.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

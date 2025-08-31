@@ -1,0 +1,20 @@
+{
+  "name": "tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Cucumber tests with Playwright for SvelteLab monorepo",
+  "scripts": {
+    "cucumber": "cucumber-js",
+    "cucumber:parallel": "cucumber-js --parallel 2",
+    "cucumber:headed": "HEADLESS=false cucumber-js",
+    "cucumber:debug": "HEADLESS=false cucumber-js --tags @debug"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@cucumber/cucumber": "^10.0.1",
+    "@cucumber/pretty-formatter": "^1.0.0",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+} 
