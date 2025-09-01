@@ -23,8 +23,9 @@ jobs:
           # Fail on high or critical severity vulnerabilities
           fail-on-severity: high
 
+          # can only specify allow or deny, not both
           # Allow specific licenses (common in JavaScript ecosystem)
-          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0, WTFPL, Python-2.0, Zlib
+#          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0, WTFPL, Python-2.0, Zlib
 
           # Only deny truly problematic licenses
           deny-licenses: GPL-3.0-only, AGPL-3.0
