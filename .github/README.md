@@ -98,11 +98,6 @@ VERCEL_PROJECT_ID=your_project_id
 - **pnpm store**: Cached for faster installs
 - **Node modules**: Efficient dependency management
 
-### **Matrix Testing**
-
-- **Node.js versions**: 18 & 20
-- **Parallel execution**: Faster CI runs
-
 ### **Artifacts**
 
 - **Test results**: Cucumber reports
