@@ -15,11 +15,6 @@
     "noEmit": true,
     "types": ["node", "@playwright/test"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.js"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
-} 
+  "include": ["**/*.ts", "**/*.js"],
+  "exclude": ["node_modules"]
+}

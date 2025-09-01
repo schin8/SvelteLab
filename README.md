@@ -1,6 +1,6 @@
 # SvelteLab 🚀
 
-A modern monorepo for SvelteKit applications and shared packages, featuring comprehensive testing with Cucumber and Playwright.
+A modern monorepo for SvelteKit applications and shared packages, featuring comprehensive testing with Cucumber and Playwright, and automated CI/CD workflows.
 
 ## 📋 Table of Contents
 
@@ -9,6 +9,7 @@ A modern monorepo for SvelteKit applications and shared packages, featuring comp
 - [Getting Started](#getting-started)
 - [Development](#development)
 - [Testing](#testing)
+- [CI/CD](#cicd)
 - [Scripts](#scripts)
 - [Architecture](#architecture)
 - [Contributing](#contributing)
@@ -17,16 +18,25 @@ A modern monorepo for SvelteKit applications and shared packages, featuring comp
 
 SvelteLab is a pnpm monorepo that provides a scalable foundation for building SvelteKit applications with shared components and comprehensive testing infrastructure. It features:
 
-- **Modern SvelteKit 2.37** with Svelte 5
+- **Modern SvelteKit 2.22** with Svelte 5
 - **Cucumber BDD testing** with Playwright
 - **TypeScript** throughout
+- **Automated CI/CD** with GitHub Actions
 - **Shared component library** architecture
 - **Monorepo management** with pnpm workspaces
+- **Node.js 22.14.0** and pnpm 8.6.3
 
 ## 🏗️ Project Structure
 
 ```
 SvelteLab/
+├── .github/
+│   └── workflows/              # GitHub Actions CI/CD workflows
+│       ├── ci.yml              # Main CI pipeline
+│       ├── deploy.yml          # Production deployment
+│       ├── preview.yml         # Preview deployments
+│       ├── dependency-review.yml # Security scanning
+│       └── release.yml         # Automated releases
 ├── apps/
 │   └── my-playground/          # SvelteKit application
 │       ├── src/
@@ -35,11 +45,12 @@ SvelteLab/
 │       └── svelte.config.js
 ├── packages/
 │   └── ui/                     # Shared UI components (ready for expansion)
-├── tests/                      # Centralized testing infrastructure
-│   ├── features/               # Cucumber feature files
-│   ├── support/                # Step definitions and hooks
-│   ├── cucumber.js             # Cucumber configuration
-│   └── package.json
+├── tests/
+│   └── playwright/             # Cucumber + Playwright testing
+│       ├── features/           # Cucumber feature files
+│       ├── support/            # Step definitions and hooks
+│       ├── cucumber.js         # Cucumber configuration
+│       └── package.json
 ├── pnpm-workspace.yaml         # Workspace configuration
 ├── package.json                # Root configuration
 └── README.md                   # This file
@@ -49,24 +60,27 @@ SvelteLab/
 
 ### Prerequisites
 
-- **Node.js** 18+ 
-- **pnpm** 8+ (recommended package manager)
+- **Node.js** 22.14.0 (LTS)
+- **pnpm** 8.6.3 (specified in package.json)
 - **Git**
 
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone <your-repo-url>
    cd SvelteLab
    ```
 
 2. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 3. **Start the development server:**
+
    ```bash
    pnpm playground:dev
    ```
@@ -79,6 +93,7 @@ SvelteLab/
 ### Available Scripts
 
 #### **Playground Application**
+
 ```bash
 # Development
 pnpm playground:dev          # Start development server
@@ -90,6 +105,7 @@ pnpm playground:test         # Run app-specific tests
 ```
 
 #### **Testing Infrastructure**
+
 ```bash
 # Cucumber Tests (BDD)
 pnpm test:cucumber           # Run all Cucumber tests
@@ -99,6 +115,7 @@ pnpm test:cucumber:debug     # Run debug tests only
 ```
 
 #### **Monorepo Management**
+
 ```bash
 # Root level
 pnpm dev                     # Start default app (currently playground)
@@ -110,11 +127,13 @@ pnpm test                    # Run all tests
 ### Development Workflow
 
 1. **Start Development:**
+
    ```bash
    pnpm playground:dev
    ```
 
 2. **Run Tests (in another terminal):**
+
    ```bash
    pnpm test:cucumber
    ```
@@ -132,15 +151,18 @@ pnpm test                    # Run all tests
 The project uses **Cucumber with Playwright** for behavior-driven development testing.
 
 #### **Test Structure**
+
 ```
 tests/
-├── features/
-│   └── playground.feature    # Gherkin feature files
-├── support/
-│   ├── world.ts             # Custom World with Playwright
-│   ├── hooks.ts             # Cucumber lifecycle hooks
-│   └── steps.ts             # Step definitions
-└── cucumber.js              # Configuration
+└── playwright/              # Cucumber + Playwright workspace
+    ├── features/
+    │   └── playground.feature    # Gherkin feature files
+    ├── support/
+    │   ├── world.ts             # Custom World with Playwright
+    │   ├── hooks.ts             # Cucumber lifecycle hooks
+    │   └── steps.ts             # Step definitions
+    ├── cucumber.js              # Configuration
+    └── package.json             # Test dependencies
 ```
 
 #### **Running Tests**
@@ -149,8 +171,8 @@ tests/
 # From root directory
 pnpm test:cucumber
 
-# From tests directory
-cd tests
+# From tests/playwright directory
+cd tests/playwright
 pnpm cucumber
 
 # With visible browser
@@ -163,6 +185,7 @@ pnpm test:cucumber:parallel
 #### **Writing Tests**
 
 **Feature File Example:**
+
 ```gherkin
 Feature: User Authentication
   As a user
@@ -179,25 +202,101 @@ Feature: User Authentication
 ```
 
 **Step Definition Example:**
-```typescript
-import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
-import { CustomWorldClass } from './world';
 
-Given('I am on the homepage', async function(this: CustomWorldClass) {
-  await this.page!.goto('http://localhost:5173');
+```typescript
+import { Given, When, Then } from "@cucumber/cucumber";
+import { expect } from "@playwright/test";
+import { CustomWorldClass } from "./world";
+
+const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
+
+Given("I am on the homepage", async function (this: CustomWorldClass) {
+  await this.page!.goto(BASE_URL);
 });
 
-When('I enter valid credentials', async function(this: CustomWorldClass) {
+When("I enter valid credentials", async function (this: CustomWorldClass) {
   // Implementation here
 });
 ```
 
 ### Test Reports
 
-- **HTML Report**: `cucumber-report.html`
-- **JSON Report**: `cucumber-report.json`
+- **HTML Report**: `report/playwright/cucumber-report.html`
+- **JSON Report**: `report/playwright/cucumber-report.json`
 - **Console Output**: Pretty-formatted results
+
+## 🚀 CI/CD
+
+The project includes comprehensive GitHub Actions workflows for automated testing, security scanning, and deployment.
+
+### **Workflows**
+
+#### **1. CI Pipeline** (`.github/workflows/ci.yml`)
+**Triggers**: Push to `main`/`develop`, Pull Requests
+
+**Features**:
+- ✅ Type checking with `svelte-check`
+- ✅ Code linting with ESLint
+- ✅ Production build testing
+- ✅ E2E testing with Cucumber/Playwright
+- ✅ Security audit with `pnpm audit`
+- ✅ Test result artifacts
+- ✅ Playwright browser caching
+
+#### **2. Dependency Review** (`.github/workflows/dependency-review.yml`)
+**Triggers**: Pull Requests
+
+**Features**:
+- 🔒 Security vulnerability scanning
+- 📋 License compliance checking
+- 💬 Automatic PR comments with results
+
+#### **3. Preview Deployments** (`.github/workflows/preview.yml`)
+**Triggers**: PRs and pushes to `develop`
+
+**Features**:
+- 🔍 Quick testing and building
+- 🚀 Ready for deployment platform integration
+- 💬 PR comments with deployment status
+
+#### **4. Production Deployment** (`.github/workflows/deploy.yml`)
+**Triggers**: Push to `main`, manual dispatch
+
+**Features**:
+- 🏭 Production builds with optimizations
+- 🛡️ Environment protection
+- 📦 Build artifact uploads
+- 🔧 Ready for platform integration
+
+#### **5. Automated Releases** (`.github/workflows/release.yml`)
+**Triggers**: Git tags (`v*`)
+
+**Features**:
+- 📝 Automatic changelog generation
+- 📦 Release archives
+- 🏷️ GitHub release creation
+
+### **Environment Variables**
+
+The CI/CD system supports flexible configuration through environment variables:
+
+```bash
+# Testing
+BASE_URL=http://localhost:5173  # Default for local development
+BASE_URL=http://localhost:4173  # Used in CI for preview builds
+
+# CI Environment
+CI=true                         # Enables CI-specific optimizations
+NODE_ENV=production            # For production builds
+```
+
+### **Branch Protection**
+
+Recommended branch protection rules for `main`:
+- ✅ Require status checks to pass
+- ✅ Require CI workflow completion
+- ✅ Require dependency review
+- ✅ Dismiss stale reviews when new commits are pushed
 
 ## 🏛️ Architecture
 
@@ -210,9 +309,11 @@ When('I enter valid credentials', async function(this: CustomWorldClass) {
 
 ### **Technology Stack**
 
-- **Frontend**: SvelteKit 2.37, Svelte 5, TypeScript
+- **Frontend**: SvelteKit 2.22, Svelte 5, TypeScript
 - **Testing**: Cucumber, Playwright
-- **Package Manager**: pnpm with workspaces
+- **CI/CD**: GitHub Actions
+- **Package Manager**: pnpm 8.6.3 with workspaces
+- **Runtime**: Node.js 22.14.0 (LTS)
 - **Build Tool**: Vite
 - **Code Quality**: ESLint, Prettier, svelte-check
 
@@ -221,14 +322,15 @@ When('I enter valid credentials', async function(this: CustomWorldClass) {
 ```yaml
 # pnpm-workspace.yaml
 packages:
-  - 'apps/*'
-  - 'packages/*'
-  - 'tests'
+  - "apps/*"
+  - "packages/*"
+  - "tests/playwright"
 ```
 
 ## 📦 Adding New Applications
 
 1. **Create a new app:**
+
    ```bash
    cd apps
    pnpm create svelte@latest my-new-app
@@ -237,6 +339,7 @@ packages:
    ```
 
 2. **Add scripts to root package.json:**
+
    ```json
    {
      "scripts": {
@@ -270,13 +373,13 @@ Each package has its own `tsconfig.json` with proper module resolution and path 
 // tests/cucumber.js
 module.exports = {
   default: {
-    requireModule: ['ts-node/register'],
-    require: ['support/*.ts'],
-    format: ['@cucumber/pretty-formatter'],
-    paths: ['features/*.feature'],
+    requireModule: ["ts-node/register"],
+    require: ["support/*.ts"],
+    format: ["@cucumber/pretty-formatter"],
+    paths: ["features/*.feature"],
     parallel: 2,
-    timeout: 30000
-  }
+    timeout: 30000,
+  },
 };
 ```
 
@@ -322,6 +425,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Happy coding! 🎉**
-
-
-

@@ -10,11 +10,12 @@
     "cucumber:debug": "HEADLESS=false cucumber-js --tags @debug"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
-    "@cucumber/cucumber": "^10.0.1",
+    "@cucumber/cucumber": "^12.2.0",
     "@cucumber/pretty-formatter": "^1.0.0",
+    "@playwright/test": "^1.55.0",
     "@types/node": "^20.0.0",
+    "playwright": "^1.55.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.0"
   }
-} 
+}

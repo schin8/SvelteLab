@@ -21,6 +21,7 @@ tests/
 ## Setup
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
@@ -33,6 +34,7 @@ tests/
 ## Running Tests
 
 ### From the root directory:
+
 ```bash
 # Run Cucumber tests
 pnpm test:cucumber
@@ -48,6 +50,7 @@ pnpm test:cucumber:debug
 ```
 
 ### From the tests directory:
+
 ```bash
 # Run Cucumber tests
 pnpm cucumber
@@ -65,9 +68,11 @@ pnpm cucumber:debug
 ## Writing Cucumber Tests
 
 ### Feature Files
+
 Create `.feature` files in the `features/` directory using Gherkin syntax.
 
 Example:
+
 ```gherkin
 Feature: User Authentication
   As a user
@@ -85,29 +90,34 @@ Feature: User Authentication
 ```
 
 ### Step Definitions
+
 Add step definitions in `support/steps.ts`:
 
 ```typescript
-import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
-import { CustomWorldClass } from './world';
+import { Given, When, Then } from "@cucumber/cucumber";
+import { expect } from "@playwright/test";
+import { CustomWorldClass } from "./world";
 
-Given('I am on the homepage', async function(this: CustomWorldClass) {
-  await this.page!.goto('http://localhost:5173');
+Given("I am on the homepage", async function (this: CustomWorldClass) {
+  await this.page!.goto("http://localhost:5173");
 });
 
-When('I enter valid credentials', async function(this: CustomWorldClass) {
+When("I enter valid credentials", async function (this: CustomWorldClass) {
   // Implementation here
 });
 
-Then('I should be redirected to the dashboard', async function(this: CustomWorldClass) {
-  await expect(this.page!).toHaveURL(/dashboard/);
-});
+Then(
+  "I should be redirected to the dashboard",
+  async function (this: CustomWorldClass) {
+    await expect(this.page!).toHaveURL(/dashboard/);
+  },
+);
 ```
 
 ## Configuration
 
 ### Cucumber Configuration (`cucumber.js`)
+
 - TypeScript support with `ts-node`
 - Pretty formatter for readable output
 - HTML and JSON reports
@@ -121,6 +131,7 @@ Then('I should be redirected to the dashboard', async function(this: CustomWorld
 ## Reports
 
 Cucumber generates:
+
 - **HTML Report**: `cucumber-report.html`
 - **JSON Report**: `cucumber-report.json`
 - **Console Output**: Pretty-formatted test results
@@ -132,4 +143,4 @@ Cucumber generates:
 3. **Use Scenario Outlines**: For testing multiple data sets
 4. **Leverage World**: Store shared state in the CustomWorld class
 5. **Write Descriptive Steps**: Make scenarios readable for non-technical stakeholders
-6. **Use Tags**: Organize tests with tags like `@smoke`, `@regression`, `@debug` 
+6. **Use Tags**: Organize tests with tags like `@smoke`, `@regression`, `@debug`

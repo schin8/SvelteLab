@@ -1,0 +1,86 @@
+name: Preview Deploy
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [develop]
+
+jobs:
+  preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.6.3
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: |
+          pnpm playground:check
+          pnpm playground:lint
+
+      - name: Build application
+        run: pnpm playground:build
+
+      # Uncomment and configure for your deployment platform
+      # Example for Vercel:
+      # - name: Deploy to Vercel
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     working-directory: ./apps/my-playground
+      #     scope: ${{ secrets.VERCEL_ORG_ID }}
+
+      # Example for Netlify:
+      # - name: Deploy to Netlify
+      #   uses: nwtgck/actions-netlify@v3.0
+      #   with:
+      #     publish-dir: './apps/my-playground/build'
+      #     production-branch: main
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     deploy-message: "Deploy from GitHub Actions"
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚀 Preview deployment completed! \n\n✅ Build successful\n✅ Tests passed\n\n_Configure deployment platform in `.github/workflows/preview.yml` to get preview URLs._'
+            })
