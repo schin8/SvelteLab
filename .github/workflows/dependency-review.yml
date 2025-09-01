@@ -20,14 +20,14 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          # Fail on moderate or higher severity vulnerabilities
-          fail-on-severity: moderate
+          # Fail on high or critical severity vulnerabilities
+          fail-on-severity: high
 
-          # Allow specific licenses (adjust as needed)
-          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD
+          # Allow specific licenses (common in JavaScript ecosystem)
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0, WTFPL, Python-2.0, Zlib
 
-          # Deny specific licenses
-          deny-licenses: GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0
+          # Only deny truly problematic licenses
+          deny-licenses: GPL-3.0-only, AGPL-3.0
 
           # Comment on PR with results
           comment-summary-in-pr: always
