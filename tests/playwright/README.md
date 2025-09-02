@@ -91,7 +91,7 @@ Feature: User Authentication
 
 ### Step Definitions
 
-Add step definitions in `support/playground.playground.steps.ts`:
+Add step definitions in `support/playground.steps.ts`:
 
 ```typescript
 import { Given, When, Then } from "@cucumber/cucumber";
