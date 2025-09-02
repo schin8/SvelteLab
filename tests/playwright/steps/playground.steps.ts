@@ -1,10 +1,12 @@
 import { Given, When, Then } from "@cucumber/cucumber";
 import { expect } from "@playwright/test";
-import { CustomWorldClass } from "./world";
+import { CustomWorldClass } from "../support/world";
+import logger from "../support/logger";
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
 
 Given("I am on the homepage", async function (this: CustomWorldClass) {
+  logger.debug("Navigating to homepage...");
   try {
     await this.page!.goto(BASE_URL, { timeout: 10000 });
   } catch (error) {

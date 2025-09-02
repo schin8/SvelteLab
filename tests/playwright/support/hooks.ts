@@ -1,18 +1,46 @@
-import { Before, After, BeforeAll, AfterAll } from "@cucumber/cucumber";
+import {Before, After, BeforeAll, AfterAll, BeforeStep} from "@cucumber/cucumber";
 import { CustomWorldClass } from "./world";
+import logger from "./logger";
 
 BeforeAll(async function () {
-  console.log("Starting Cucumber tests...");
-});
+  logger.info("Starting Cucumber tests...");
 
-Before(async function (this: CustomWorldClass) {
-  await this.init();
-});
-
-After(async function (this: CustomWorldClass) {
-  await this.cleanup();
 });
 
 AfterAll(async function () {
-  console.log("Cucumber tests completed.");
+  logger.info("Cucumber tests completed.");
 });
+
+Before(async function (this: CustomWorldClass, testCase) {
+  const scenarioName = testCase.pickle.name;
+  logger.info(`🎬 Scenario: ${scenarioName}`);
+  await this.init();
+});
+
+After(async function (this: CustomWorldClass, testCase) {
+  if (testCase.result) {
+    logger.info(displayResult(testCase.result.status));
+  } else {
+    logger.warn('No result found for the scenario.');
+  }
+  await this.cleanup();
+});
+
+BeforeStep(async function (this: CustomWorldClass, step) {
+  logger.debug(`Step: ${step.pickleStep.text}`);
+});
+
+
+// Helpers
+function displayResult(status: string) {
+  switch (status) {
+    case 'PASSED':
+      return 'Passed : 🟢';
+    case 'PENDING':
+      return 'Pending 🟡';
+    case 'SKIPPED':
+      return 'Skipped 🟡';
+    default:
+      return 'Failed 🔴';
+  }
+}

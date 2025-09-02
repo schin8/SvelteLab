@@ -11,7 +11,7 @@ tests/
 ├── support/          # Cucumber step definitions and support files
 │   ├── world.ts      # Custom World class with Playwright integration
 │   ├── hooks.ts      # Cucumber lifecycle hooks
-│   └── steps.ts      # Step definitions
+│   └── playground.steps.ts      # Step definitions
 ├── package.json      # Test dependencies and scripts
 ├── cucumber.js       # Cucumber configuration
 ├── tsconfig.json     # TypeScript configuration
@@ -91,7 +91,7 @@ Feature: User Authentication
 
 ### Step Definitions
 
-Add step definitions in `support/steps.ts`:
+Add step definitions in `support/playground.steps.ts`:
 
 ```typescript
 import { Given, When, Then } from "@cucumber/cucumber";

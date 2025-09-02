@@ -1,11 +1,11 @@
 module.exports = {
   default: {
     requireModule: ["ts-node/register"],
-    require: ["support/*.ts"],
+    require: ["support/*.ts", "steps/*.ts"],
     format: [
-      "@cucumber/pretty-formatter",
-      "html:../report/playwright/cucumber-report.html",
-      "json:../report/playwright/cucumber-report.json",
+      "progress",
+      "html:../../report/playwright/cucumber-report.html",
+      "json:../../report/playwright/cucumber-report.json",
     ],
     paths: ["features/*.feature"],
     parallel: 1,
